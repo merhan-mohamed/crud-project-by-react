@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from "react";
+import CourseForm from "./components/CourseForm";
+import CourseList from "./components/CourseList";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component {
+  state = {
+    courses : [
+      {id:1, name:"Html"},
+      {id:2, name:"CSS"},
+      {id:3, name:"JS"}
+    ]
+  }
+
+  AddCourse = (item) => {
+    let courses = this.state.courses
+    courses.length ? item.id = courses[courses.length -1].id+1 : item.id =1
+    courses.push(item)
+    this.setState({courses})
+  }
+
+  Delete = (id) => {
+    let courses = this.state.courses
+    courses.splice(id,1)
+    this.setState({courses})
+  }
+
+  EditCourse = (index, value) => {
+    let courses = this.state.courses
+    let course = courses[index]
+    course["name"] = value 
+    this.setState({courses})
+
+
+  }
+  render(){
+    const {courses} = this.state
+    const courselist = courses.map((course, index) => {
+      return <CourseList details={course} key={index} delete={this.Delete} index={index} EditCourse={this.EditCourse}/>
+    })
+    return(
+      <section className="App">
+      <h2>Add Course</h2>
+      <ul>{courselist}</ul>
+      <CourseForm AddCourse = {this.AddCourse}/>
+      </section>
+    )
+  }
 }
 
 export default App;
